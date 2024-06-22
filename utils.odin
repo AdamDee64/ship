@@ -12,6 +12,11 @@ Monitor :: struct{
     height : f32
 }
 
+Color_Gradient :: struct {
+    start_color : rl.Color,
+    color_delta : [3]f32
+}
+
 get_monitor_data :: proc() -> Monitor {
     using monitor : Monitor = ---
     id = rl.GetCurrentMonitor()
@@ -38,4 +43,13 @@ vec2_clamp :: proc(vec : ^Vec2, range : Vec2){
     if vec.x < range.x {vec.x = range.x}
     if vec.y > range.y {vec.y = range.y}
     if vec.y < range.x {vec.y = range.x}
+}
+
+get_gradient :: proc(normal : f32, start_color : rl.Color, color_delta : [3]f32) -> rl.Color {
+    color : rl.Color = ---
+    color.r = u8(f32(start_color.r) - normal * color_delta.r)
+    color.g = u8(f32(start_color.g) - normal * color_delta.g)
+    color.b = u8(f32(start_color.b) - normal * color_delta.b)
+    color.a = 255
+    return color
 }
