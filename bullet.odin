@@ -8,7 +8,7 @@ Bullet :: struct {
     position : Vec2,
     direction : Vec2,
     points : [5]Vec2,
-    active : b8,
+    color : rl.Color
 }
 
 make_bullet :: proc(pos : Vec2, dir : Vec2) -> Bullet {
@@ -26,8 +26,7 @@ make_bullet :: proc(pos : Vec2, dir : Vec2) -> Bullet {
         point.y = point.x * sin + point.y * cos
         point.x = temp
     }
-
-    active = true
+    color = get_random_bright_color()
     return new_bullet 
 }
 
@@ -38,7 +37,7 @@ spawn_bullet :: proc(ship : ^Ship, bullets : ^[dynamic]Bullet){
 
 draw_bullet :: proc(using bullet : ^Bullet){
     for i in 0..<5 {
-        rl.DrawLineV(points[i % 9] + position, points[(i + 1) % 5] + position, rl.WHITE)
+        rl.DrawLineV(points[i % 9] + position, points[(i + 1) % 5] + position, color)
      }
     //rl.DrawCircleV(position, 10, rl.PURPLE)
 }

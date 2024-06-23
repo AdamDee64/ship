@@ -1,5 +1,7 @@
 package main
 
+
+import "core:math/rand"
 import rl "vendor:raylib"
 
 Vec2 :: [2]f32 
@@ -21,10 +23,14 @@ get_monitor_data :: proc() -> Monitor {
     using monitor : Monitor = ---
     id = rl.GetCurrentMonitor()
     refresh = rl.GetMonitorRefreshRate(id)
-    if refresh %  72 == 0 {
+    if refresh % 144 == 0 {
+        fps = 144
+    } else if refresh % 120 == 0{ 
+        fps = 120
+    } else if refresh % 72 == 0{ 
         fps = 72
-    } else { 
-        fps = 60 
+    } else if refresh % 60 == 0{ 
+        fps = 60
     } 
     width = f32(rl.GetScreenWidth())
     height = f32(rl.GetScreenHeight())
@@ -50,6 +56,15 @@ get_gradient :: proc(normal : f32, start_color : rl.Color, color_delta : [3]f32)
     color.r = u8(f32(start_color.r) - normal * color_delta.r)
     color.g = u8(f32(start_color.g) - normal * color_delta.g)
     color.b = u8(f32(start_color.b) - normal * color_delta.b)
+    color.a = 255
+    return color
+}
+
+get_random_bright_color :: proc () -> rl.Color {
+    color : rl.Color = ---
+    color.r = u8(rand.int31() % 50 + 205)
+    color.g = u8(rand.int31() % 50 + 205)
+    color.b = u8(rand.int31() % 50 + 205)
     color.a = 255
     return color
 }

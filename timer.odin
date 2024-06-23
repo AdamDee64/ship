@@ -18,13 +18,14 @@ create_timer :: proc(set_time : f32, active : b8 = true, loop : b8 = false) -> T
 
 update_timer :: proc(using timer : ^Timer, dt : f32) {
     if running {
-        time_left -= dt
         if time_left <= 0.0 {
             if looping {
                 time_left = time_set + time_left
             } else {
+                time_left = time_set
                 running = false 
             }
         }
+        time_left -= dt
     }
 }

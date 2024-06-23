@@ -1,5 +1,6 @@
 package main
 
+import "core:fmt"
 import rl "vendor:raylib"
 
 RAD :: 0.01745329
@@ -35,11 +36,17 @@ main :: proc() {
    explosions : [dynamic]Explosion
    bullets : [dynamic]Bullet
 
+   asteroid_spawn_timer := create_timer(2.0, true, true)
+
    for !rl.WindowShouldClose() {
       dt := rl.GetFrameTime()
 
       // ----------------- Update -------------------- //
 
+      update_timer(&asteroid_spawn_timer, dt)
+      if asteroid_spawn_timer.time_left <= 0 {
+         spawn_asteroid(&asteroids)
+      }
 
       ship.position += ship.direction * ship.accelleration * dt
       // check ship collision with asteroids
@@ -49,6 +56,10 @@ main :: proc() {
             rotate_asteroid(&asteroid)
             using asteroid
             position += direction * speed * dt
+            if rl.CheckCollisionCircles(ship.position, 9, position, size){
+               append(&explosions, add_explosion(ship.position))
+               fmt.println("hit on ship")
+            }
             if position.x < -DESPAWN || position.x > monitor.width + DESPAWN || position.y < -DESPAWN || position.y > monitor.height + DESPAWN {
                defer unordered_remove(&asteroids, index)
             }
@@ -58,8 +69,20 @@ main :: proc() {
       if len(bullets) > 0 {
          for &bullet, index in bullets {
             // check bullet collision with asteroids
-            // update bullet position
             using bullet
+            if len(asteroids) > 0 {
+               for &asteroid, asteroid_index in asteroids {
+                  if rl.CheckCollisionCircles(position, 3, asteroid.position, asteroid.size){
+                     append(&explosions, add_explosion(position))
+                     if asteroid.size > 10 {
+                       spawn_asteroid(&asteroids, true, asteroid_index)
+                     }
+                     defer unordered_remove(&asteroids, asteroid_index)
+                     defer unordered_remove(&bullets, index)
+                     break
+                  }
+               }
+            }
             position += direction * dt * BULLET_SPEED
             if position.x < -DESPAWN || position.x > monitor.width + DESPAWN || position.y < -DESPAWN || position.y > monitor.height + DESPAWN {
                defer unordered_remove(&bullets, index)
