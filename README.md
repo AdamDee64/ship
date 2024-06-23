@@ -4,7 +4,10 @@ https://odin-lang.org/
 
 https://www.raylib.com/
 
+<picture>
+ <img alt="version 0.2" src="img/Screenshot_2.png">
+</picture>
 
 <picture>
- <img alt="screenshot" src="img/screenshot.png">
+ <img alt="version 0.1" src="img/screenshot.png">
 </picture>
